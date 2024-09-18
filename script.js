@@ -14,10 +14,13 @@ function renderTasks() {
         const li = document.createElement('li');
         li.innerHTML = `
             <span class="task-text">${task.text}</span>
-            <div class="task-actions">
-                <button onclick="toggleComplete(${index})"><i class="fas ${task.completed ? 'fa-undo' : 'fa-check'}"></i></button>
-                <button onclick="editTask(${index})"><i class="fas fa-edit"></i></button>
-                <button class="delete-btn" onclick="deleteTask(${index})"><i class="fas fa-trash"></i></button>
+            <div class="task-info">
+                <span class="task-date">${new Date(task.timestamp).toLocaleString()}</span>
+                <div class="task-actions">
+                    <button onclick="toggleComplete(${index})"><i class="fas ${task.completed ? 'fa-undo' : 'fa-check'}"></i></button>
+                    <button onclick="editTask(${index})"><i class="fas fa-edit"></i></button>
+                    <button class="delete-btn" onclick="deleteTask(${index})"><i class="fas fa-trash"></i></button>
+                </div>
             </div>
         `;
         if (task.completed) {
@@ -32,10 +35,12 @@ function addTask() {
     const input = document.getElementById('task-input');
     const text = input.value.trim();
     if (text) {
-        tasks.push({ text, completed: false });
+        tasks.push({ text, completed: false, timestamp: new Date().toISOString() });
         input.value = '';
         saveTasks();
         renderTasks();
+    } else {
+        alert('Please enter a task before adding.');
     }
 }
 
@@ -43,6 +48,7 @@ function editTask(index) {
     const newText = prompt('Edit task:', tasks[index].text);
     if (newText !== null) {
         tasks[index].text = newText.trim();
+        tasks[index].timestamp = new Date().toISOString();
         saveTasks();
         renderTasks();
     }
@@ -58,6 +64,7 @@ function deleteTask(index) {
 
 function toggleComplete(index) {
     tasks[index].completed = !tasks[index].completed;
+    tasks[index].timestamp = new Date().toISOString();
     saveTasks();
     renderTasks();
 }
